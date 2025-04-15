@@ -9,5 +9,4 @@ parser
 (2+3)(4+5) is not accepted by my code, (2+3)\*(4+5) is accepted
 
 Note: don't add space in the input string.
-Because
-4 4 is valid string in my code cuz only 4 goes in input buffer in this case
+This is because a string like 4 4 is considered valid in my code, only the first 4 is read into the input buffer.
