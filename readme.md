@@ -1,4 +1,7 @@
+Compilation:
 g++ parser.cpp -o parser
+
+Execution:
 parser
 
 2+3$4 is showing valid (need to fix)
