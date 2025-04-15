@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Precedence matrix (unchanged)
+// Precedence matrix
 int precedence[8][8] = {
     {-1, -1, 1, 1, -1, 1, -1, 1},     // +
     {-1, -1, 1, 1, -1, 1, -1, 1},     // -
@@ -44,7 +44,7 @@ char getSecondTop(stack<char> &stk)
     return second;
 }
 
-// **CHANGE 1**: Function to print stack contents
+// Function to print stack contents
 void printStack(stack<char> stk)
 {
     vector<char> temp;
@@ -64,7 +64,7 @@ void printStack(stack<char> stk)
     }
 }
 
-// **CHANGE 2**: Function to print input buffer from current pointer
+// Function to print input buffer from current pointer
 void printInputBuffer(const string &input, int i)
 {
     cout << "Input Buffer: ";
@@ -86,17 +86,19 @@ bool tryReduce(stack<char> &stk)
     }
     reverse(temp.begin(), temp.end());
 
-    // E -> int literal
+    // Reduction on the based of Grammer:---------------------------------------------------------------------------
+    // {E -> E + E, E -> E - E, E -> E * E, E -> E / E, E -> int literal, E -> (E)}
+
+    // For E -> int literal
     if (temp.size() >= 1 && temp.back() == 'n')
     {
         cout << "Reduce: E -> int literal" << endl;
         for (int i = 0; i < temp.size() - 1; i++)
             stk.push(temp[i]);
-        // printStack(stk); // **CHANGE 3**: Print stack after popping
         stk.push('E'); // Push E for reduced expression
         return true;
     }
-    // E -> E + E, E -> E - E, E -> E * E, E -> E / E
+    // For E -> E + E, E -> E - E, E -> E * E, E -> E / E
     else if (temp.size() >= 3 && temp[temp.size() - 3] == 'E' &&
              (temp[temp.size() - 2] == '+' || temp[temp.size() - 2] == '-' ||
               temp[temp.size() - 2] == '*' || temp[temp.size() - 2] == '/') &&
@@ -106,22 +108,20 @@ bool tryReduce(stack<char> &stk)
         cout << "Reduce: E -> E" << op << "E" << endl;
         for (int i = 0; i < temp.size() - 3; i++)
             stk.push(temp[i]);
-        // printStack(stk); // **CHANGE 3**: Print stack after popping
         stk.push('E'); // Push E for reduced expression
         return true;
     }
-    // E -> (E)
+    // For E -> (E)
     else if (temp.size() >= 3 && temp[temp.size() - 3] == '(' &&
              temp[temp.size() - 2] == 'E' && temp[temp.size() - 1] == ')')
     {
         cout << "Reduce: E -> (E)" << endl;
         for (int i = 0; i < temp.size() - 3; i++)
             stk.push(temp[i]);
-        // printStack(stk); // **CHANGE 3**: Print stack after popping
         stk.push('E'); // Push E for reduced expression
         return true;
     }
-
+    // ----------------------------------------------------------------------------------------------
     // Restore stack if no reduction
     for (char c : temp)
         stk.push(c);
@@ -159,8 +159,8 @@ void parse(string input)
             currentToken = current;
         }
 
-        // **CHANGE 4**: Print stack and input buffer before action
-        // step_number++;
+        // Print stack and input buffer before action
+
         cout << endl
              << "Step: " << endl;
         printStack(stk);
@@ -183,8 +183,8 @@ void parse(string input)
         { // Shift
             cout << "Shift: " << currentToken << endl;
             stk.push(current);
-            printStack(stk);                                                           // **CHANGE 5**: Print stack after shift
-            printInputBuffer(input, i + (current == 'n' ? currentToken.length() : 1)); // **CHANGE 6**: Print input after shift
+            printStack(stk);                                                           // Print stack after shift
+            printInputBuffer(input, i + (current == 'n' ? currentToken.length() : 1)); // Print input after shift
             if (current == 'n')
                 i += currentToken.length(); // Advance pointer for number
             else
@@ -199,7 +199,7 @@ void parse(string input)
                 printInputBuffer(input, i);
                 return;
             }
-            // **CHANGE 7**: Print stack and input after reduction
+            // Print stack and input after reduction
             printStack(stk);
             printInputBuffer(input, i);
         }
